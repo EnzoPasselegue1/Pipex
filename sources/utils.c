@@ -6,7 +6,7 @@
 /*   By: enpassel <enpassel@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 15:13:22 by enpassel          #+#    #+#             */
-/*   Updated: 2025/01/13 17:05:17 by enpassel         ###   ########lyon.fr   */
+/*   Updated: 2025/01/14 12:24:43 by enpassel         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,22 +60,23 @@ char	*find_path(char *cmd, char **envp)
 		free(command_path);
 		i++;
 	}
-    i = -1;
+	i = -1;
 	while (path_list[++i])
 		free(path_list[i]);
 	free(path_list);
-	return (NULL);
+	return (0);
 }
 
-void	ft_error(char *str, int status)
+void	ft_error(void)
 {
-	//ft_putstr_fd("\033[31m", 2);
-	ft_putstr_fd(str, 2);
-	ft_putstr_fd("\033[0m\n", strlen(str));
-    if(status != 0)
-	    exit(status);
-    else
-        exit(EXIT_FAILURE);
+	perror("\033[31mError");
+	exit(EXIT_FAILURE);
+}
+
+void	ft_error_message(void)
+{
+	ft_putstr_fd("\033[31mError: Command not found\n", 2);
+	exit(126);
 }
 
 void	execute(char *args, char **envp)
@@ -92,9 +93,8 @@ void	execute(char *args, char **envp)
 		while (cmd[++i])
 			free(cmd[i]);
 		free(cmd);
-		ft_error("Command not found", 127);
+		ft_error_message();
 	}
-    if (execve(path, cmd, envp) == -1)
-	    ft_error("Command not found", 127);
-
+	if (execve(path, cmd, envp) == -1)
+		ft_error_message();
 }

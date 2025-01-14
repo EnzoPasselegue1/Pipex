@@ -19,20 +19,21 @@ HEADERS:= -I $(INCLUDES) -I $(LIBFT_DIR)
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
-	$(MAKE) -C $(LIBFT_DIR)
+$(NAME): $(OBJ) $(LIBFT)
 	$(CC) $(CCFLAGS) $(OBJ) $(LIBFT_FLAG) -o $(NAME)
 	@echo "👉 $(BLUE)$(CC) $(CCFLAGS) $(OBJ) $(LIBFT_FLAG) -o $(NAME)$(DEF_COLOR) 👀👀👀"
 	@echo "$(GREEN) 💪💪💪💪💪💪👉 🦸🦸 $(NAME) compiled! 🦸🦸 💪💪💪💪💪💪 $(DEF_COLOR)"
 	
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(LIBFT)
 	@mkdir -p $(OBJ_DIR)
 	@echo "✅ $(MAGENTA)Compiling: $< $(DEF_COLOR) ✅"
 	$(CC) $(CCFLAGS) $(CPPFLAGS)  $(HEADERS) -o $@ -c $<
 
--include $(DEPS)
-# Colors
+$(LIBFT): FORCE
+	$(MAKE) -C $(LIBFT_DIR)
+FORCE :
 
+#colors
 DEF_COLOR = \033[0;39m
 GRAY = \033[0;90m
 RED = \033[0;91m
@@ -59,5 +60,7 @@ re: fclean all
 info:
 	@echo "OBJ": $(OBJ)
 	@echo "DEPS": $(DEPS)
+
+-include $(DEPS)
 
 .PHONY: all clean fclean re
